@@ -21,14 +21,18 @@ class AuthController extends Controller
         try{
         $googleUser = Socialite::driver('google')->stateless()->user();
         
+        $user = User::where('email', $googleUser->getEmail()) -> first();
+
+        $password = $user ? $user->password : bcrypt(Str::random(16));
         $user = User::updateOrCreate([
             'email' => $googleUser->getEmail(),
         ], [
             'name' => $googleUser->getName(),
             'google_id' => $googleUser->getId(),
-            'password' => bcrypt(Str::random(16)),
+            'password' =>$password,
         ]);
 
+        Auth::login($user);
         $token = $user->createToken('auth_token')->plainTextToken;
         return redirect() -> to("http://localhost:3000/auth/callback?token={$token}");
         
