@@ -34,10 +34,10 @@ class AuthController extends Controller
 
         Auth::login($user);
         $token = $user->createToken('auth_token')->plainTextToken;
-        return redirect() -> to("http://localhost:3000/auth/callback?token={$token}");
+        return redirect() -> to("https://aikocare.vercel.app/auth/callback?token={$token}");
         
         } catch (\Exception $e) {
-            return redirect() -> to("http://localhost:3000/login?error=google_failed");
+            return redirect() -> to("https://aikocare.vercel.app/login?error=google_failed");
         }
     }
 
