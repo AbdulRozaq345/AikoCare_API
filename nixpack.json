@@ -1,0 +1,19 @@
+{
+    "phases": {
+        "setup": {
+            "nixPkgs": [
+                "(php.withExtensions (pe: pe.enabled ++ []))",
+                "nginx",
+                "libmysqlclient",
+                "phpPackages.composer",
+                "nodejs_22",
+                "npm-9_x",
+                "curl",
+                "wget"
+            ]
+        }
+    },
+    "start": {
+        "cmd": "php-fpm -y /assets/php-fpm.conf -D && nginx -g 'daemon off;' -c /app/nginx.conf"
+    }
+}
