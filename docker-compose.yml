@@ -2,24 +2,31 @@ version: '3.8'
 
 services:
   app:
-    image: bitnami/laravel:latest
+    image: php:8.2-cli # Pake PHP resmi, lebih stabil & lengkap
     container_name: aiko_api_app
     user: root
     restart: always
-    # KITA PAKSA BITNAMI INSTALL GIT DULU SEBELUM KERJA
-    entrypoint: [ "/bin/bash", "-c", "apt-get update && apt-get install -y git && composer install --no-interaction && php artisan key:generate && php artisan serve --host=0.0.0.0 --port=8000" ]
+    working_dir: /var/www/html
     environment:
       - APP_KEY=${APP_KEY}
-      - APP_DEBUG=true
       - DB_HOST=aiko_mysql
       - DB_DATABASE=api_aiko
       - DB_USERNAME=root
       - DB_PASSWORD=root
     ports:
       - "8001:8000"
-    working_dir: /app
     volumes:
-      - .:/app # INI WAJIB TITIK BIAR PORTAINER NYUNTIKIN KODINGAN KE SINI
+      - .:/var/www/html # Portainer bakal nyuntikin kodingan lo ke sini
+    # KITA PAKSA INSTALL SEMUA YANG DIBUTUHKAN DI SINI
+    entrypoint: 
+      - /bin/bash
+      - -c
+      - |
+        apt-get update && apt-get install -y git unzip libzip-dev
+        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+        composer install --no-interaction
+        php artisan key:generate
+        php artisan serve --host=0.0.0.0 --port=8000
     networks:
       - web-gateway
       - db-network
