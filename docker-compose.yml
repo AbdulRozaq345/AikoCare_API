@@ -8,20 +8,14 @@ services:
     restart: always
     environment:
       - APP_KEY=${APP_KEY}
-      - APP_ENV=local
-      - APP_DEBUG=true
       - DB_HOST=aiko_mysql
       - DB_DATABASE=api_aiko
       - DB_USERNAME=root
       - DB_PASSWORD=root
-    # KITA PAKSA DIA COPY SEMUA FILE DARI GITHUB KE /app
-    volumes:
-      - .:/app 
     ports:
       - "8001:8000"
-    # KITA PASTIKAN DIA ADA DI FOLDER YANG BENER SEBELUM JALANIN ARTISAN
-    working_dir: /app
-    entrypoint: [ "/bin/bash", "-c", "ls -la && composer install --no-interaction && php artisan key:generate && php artisan serve --host=0.0.0.0 --port=8000" ]
+    # KITA PAKSA CLONE MANUAL DI DALEM CONTAINER BIAR PASTI ADA FILENYA!
+    entrypoint: [ "/bin/bash", "-c", "git clone https://github.com/AbdulRozaq345/AikoCare_API.git . && composer install && php artisan key:generate && php artisan serve --host=0.0.0.0 --port=8000" ]
     networks:
       - web-gateway
       - db-network
