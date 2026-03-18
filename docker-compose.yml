@@ -20,8 +20,6 @@ services:
       - DB_PASSWORD=root     # Sesuain sama setup DB lu
       - BITNAMI_DEBUG=true
       - LARAVEL_SKIP_DATABASE_CHECK=yes
-    volumes:
-      - .:/app # Pastiin folder 'aiko-code' ada di sebelah file ini
     entrypoint: [ "/bin/bash", "-c", "composer install && php artisan key:generate && php artisan serve --host=0.0.0.0 --port=8000" ]
     networks:
       - web-gateway
