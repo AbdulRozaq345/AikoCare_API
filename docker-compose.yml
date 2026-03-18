@@ -1,25 +1,35 @@
-version: '3'
+version: '3.8'
+
 services:
   app:
     image: bitnami/laravel:latest
     container_name: aiko_api_app
+    user: root
     restart: always
+    working_dir: /app
+    ports:
+      - "8001:8000"
     environment:
       - APP_KEY=${APP_KEY}
       - APP_ENV=local
       - APP_DEBUG=true
-      - DB_HOST=aikocare-db # Ganti kalo beda
+      - DB_HOST=aiko_mysql  # Pastiin ini nama container DB lu yang bener
       - DB_PORT=3306
-      - DB_DATABASE=${DB_DATABASE}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=api_aiko # Sesuain sama .env lu tadi
+      - DB_USERNAME=root
+      - DB_PASSWORD=root     # Sesuain sama setup DB lu
+      - BITNAMI_DEBUG=true
+      - LARAVEL_SKIP_DATABASE_CHECK=yes
     volumes:
-      - .:/app # Ini nih yang bikin kodingan lo masuk ke dalem
-    ports:
-      - "8001:8000"
+      - .:/app # Pastiin folder 'aiko-code' ada di sebelah file ini
+    entrypoint: [ "/bin/bash", "-c", "composer install && php artisan key:generate && php artisan serve --host=0.0.0.0 --port=8000" ]
     networks:
       - web-gateway
+      - db-network
 
 networks:
   web-gateway:
     external: true
+  db-network:
+    external: true
+    name: aikocare-db_default # Ini network biar bisa nyambung ke MySQL
