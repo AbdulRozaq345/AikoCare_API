@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    image: bitnami/laravel:latest # Pake image jadi biar cepet
+    container_name: aiko_api_app
+    restart: always
+    environment:
+      - APP_KEY=${APP_KEY}
+      - DB_HOST=aikocare-db # Sesuaikan ama nama container DB lo
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - .:/app # Biar kodingan lo masuk ke dalem container
+    ports:
+      - "8000:8000"
+    networks:
+      - web-gateway
+
+networks:
+  web-gateway:
+    external: true
