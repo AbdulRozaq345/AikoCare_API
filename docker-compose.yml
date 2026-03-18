@@ -6,16 +6,20 @@ services:
     container_name: aiko_api_app
     user: root
     restart: always
+    # KITA PAKSA BITNAMI INSTALL GIT DULU SEBELUM KERJA
+    entrypoint: [ "/bin/bash", "-c", "apt-get update && apt-get install -y git && composer install --no-interaction && php artisan key:generate && php artisan serve --host=0.0.0.0 --port=8000" ]
     environment:
       - APP_KEY=${APP_KEY}
+      - APP_DEBUG=true
       - DB_HOST=aiko_mysql
       - DB_DATABASE=api_aiko
       - DB_USERNAME=root
       - DB_PASSWORD=root
     ports:
       - "8001:8000"
-    # KITA PAKSA CLONE MANUAL DI DALEM CONTAINER BIAR PASTI ADA FILENYA!
-    entrypoint: [ "/bin/bash", "-c", "git clone https://github.com/AbdulRozaq345/AikoCare_API.git . && composer install && php artisan key:generate && php artisan serve --host=0.0.0.0 --port=8000" ]
+    working_dir: /app
+    volumes:
+      - .:/app # INI WAJIB TITIK BIAR PORTAINER NYUNTIKIN KODINGAN KE SINI
     networks:
       - web-gateway
       - db-network
