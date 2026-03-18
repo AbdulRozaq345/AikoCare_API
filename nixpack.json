@@ -2,18 +2,21 @@
     "phases": {
         "setup": {
             "nixPkgs": [
-                "(php.withExtensions (pe: pe.enabled ++ []))",
+                "php83",
+                "php83Extensions.mysqlnd",
                 "nginx",
-                "libmysqlclient",
-                "phpPackages.composer",
-                "nodejs_22",
-                "npm-9_x",
-                "curl",
-                "wget"
+                "php83Packages.composer",
+                "nodejs_22"
+            ]
+        },
+        "install": {
+            "cmds": [
+                "mkdir -p /var/log/nginx && mkdir -p /var/cache/nginx",
+                "composer install --ignore-platform-reqs"
             ]
         }
     },
     "start": {
-        "cmd": "php-fpm -y /assets/php-fpm.conf -D && nginx -g 'daemon off;' -c /app/nginx.conf"
+        "cmd": "php-fpm -D && nginx -g 'daemon off;' -c /app/nginx.conf"
     }
 }
